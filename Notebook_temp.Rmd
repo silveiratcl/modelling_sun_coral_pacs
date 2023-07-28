@@ -149,9 +149,9 @@ base::system.time(
     dplyr::group_modify(~OISST_sub_dl(.x)) %>% 
     dplyr::ungroup() %>% 
     dplyr::select(lon, lat, t, temp)
-) # 518 seconds, ~100 seconds per batch
+) # 740 seconds, ~100 seconds per batch
 
-```
+ ```
 
 If the above code chunk is giving errors it is likely due to one’s Internet connection timing out. There are also rare instances where the NOAA server is not responding due to an issue on their end. Any connection based issues may be resolved by simply waiting for a few minutes, or by ensuring a stable connection.
 
@@ -236,7 +236,7 @@ event_only <- function(df){
   clim <- heatwaveR::ts2clm(data = df, climatologyPeriod = c("1982-01-01", "2011-01-01"))
   
   # Then the events
-  event <- heatwaveR::detect_event(data = clim)
+  event <- heatwaveR::detect_event(data = clim, coldSpells = T)
   
   # Return only the event metric dataframe of results
   return(event$event)
@@ -315,7 +315,7 @@ OISST_files <- dir("data", pattern = "OISST_lon_*", full.names = T)
 # Use 'plyr' technique to run 'dplyr' technique with multiple cores
 system.time(
 MHW_result <- plyr::ldply(OISST_files, .fun = dplyr_wraper, .parallel = T)
-) # 31 seconds ####Error in do.ply(i) : task 1 failed - "não foi possível encontrar a função "%>%""
+) # 31 seconds #### solved Error in do.ply(i) : task 1 failed - "não foi possível encontrar a função "%>%""
 
 # Save for later use as desired
 saveRDS(MHW_result, "data/MHW_result.Rds")
