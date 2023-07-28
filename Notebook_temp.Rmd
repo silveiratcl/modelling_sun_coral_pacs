@@ -315,7 +315,7 @@ OISST_files <- dir("data", pattern = "OISST_lon_*", full.names = T)
 # Use 'plyr' technique to run 'dplyr' technique with multiple cores
 system.time(
 MHW_result <- plyr::ldply(OISST_files, .fun = dplyr_wraper, .parallel = T)
-) # 31 seconds #### solved Error in do.ply(i) : task 1 failed - "não foi possível encontrar a função "%>%""
+) # 31 seconds #### solved  - Error in do.ply(i) : task 1 failed - "não foi possível encontrar a função "%>%""
 
 # Save for later use as desired
 saveRDS(MHW_result, "data/MHW_result.Rds")
@@ -404,7 +404,7 @@ map_slope <- ggplot(OISST_nTrend, aes(x = lon, y = lat)) +
                       name = "p-value", guide = FALSE) +
   geom_polygon(data = map_base, aes(group = group), 
                colour = NA, fill = "grey80") +
-  coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-25, -29), expand = TRUE) +
+  coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
   labs(x = "", y = "") +
   theme_bw() +
   theme(legend.position = "bottom")
@@ -420,7 +420,7 @@ map_p <- ggplot(OISST_nTrend, aes(x = lon, y = lat)) +
                                                title.position = "top")) +
   geom_polygon(data = map_base, aes(group = group), 
                colour = NA, fill = "grey80") +
-  coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-25, -29), expand = TRUE) +
+  coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
   labs(x = "", y = "") +
   theme_bw() +
   theme(legend.position = "bottom")

@@ -1811,30 +1811,15 @@ install the problem package and run it before trying to load the library
 again.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIFRoZSBwYWNrYWdlcyB3ZSB3aWxsIG5lZWRcbiMgaW5zdGFsbC5wYWNrYWdlcyhcImRwbHlyXCIpXG4jIGluc3RhbGwucGFja2FnZXMoXCJsdWJyaWRhdGVcIilcbiMgaW5zdGFsbC5wYWNrYWdlcyhcImdncGxvdDJcIilcbiMgaW5zdGFsbC5wYWNrYWdlcyhcInRpZHluY1wiKVxuIyBpbnN0YWxsLnBhY2thZ2VzKFwiZG9QYXJhbGxlbFwiKVxuIyBpbnN0YWxsLnBhY2thZ2VzKFwicmVyZGRhcFwiKVxuIyBpbnN0YWxsLnBhY2thZ2VzKFwicGx5clwiKSAjIE5vdGUgdGhhdCB0aGlzIGxpYnJhcnkgc2hvdWxkIG5ldmVyIGJlIGxvYWRlZCwgb25seSBpbnN0YWxsZWRcblxuXG4jIFRoZSBwYWNrYWdlcyB3ZSB3aWxsIHVzZVxubGlicmFyeShkcGx5cikgIyBBIHN0YXBsZSBmb3IgbW9kZXJuIGRhdGEgbWFuYWdlbWVudCBpbiBSXG5saWJyYXJ5KGx1YnJpZGF0ZSkgIyBVc2VmdWwgZnVuY3Rpb25zIGZvciBkZWFsaW5nIHdpdGggZGF0ZXNcbmxpYnJhcnkoZ2dwbG90MikgIyBUaGUgcHJlZmVycmVkIGxpYnJhcnkgZm9yIGRhdGEgdmlzdWFsaXNhdGlvblxubGlicmFyeSh0aWR5bmMpICMgRm9yIGVhc2lseSBkZWFsaW5nIHdpdGggTmV0Q0RGIGRhdGFcbmxpYnJhcnkocmVyZGRhcCkgIyBGb3IgZWFzaWx5IGRvd25sb2FkaW5nIHN1YnNldHMgb2YgZGF0YVxubGlicmFyeShkb1BhcmFsbGVsKSAjIEZvciBwYXJhbGxlbCBwcm9jZXNzaW5nXG5saWJyYXJ5KHRpZHlyKSBcbmxpYnJhcnkoaGVhdHdhdmVSKSAjIEZvciBkZXRlY3RpbmcgTUhXc1xubGlicmFyeShkb1BhcmFsbGVsKSAjIEZvciBwYXJhbGxlbCBwcm9jZXNzaW5nXG5cblxuYGBgIn0= -->
-<pre class="r"><code>
-# The packages we will need
-# install.packages(&quot;dplyr&quot;)
-# install.packages(&quot;lubridate&quot;)
-# install.packages(&quot;ggplot2&quot;)
-# install.packages(&quot;tidync&quot;)
-# install.packages(&quot;doParallel&quot;)
-# install.packages(&quot;rerddap&quot;)
-# install.packages(&quot;plyr&quot;) # Note that this library should never be loaded, only installed
-
-
-# The packages we will use
-library(dplyr) # A staple for modern data management in R
-library(lubridate) # Useful functions for dealing with dates
-library(ggplot2) # The preferred library for data visualisation
-library(tidync) # For easily dealing with NetCDF data
-library(rerddap) # For easily downloading subsets of data
-library(doParallel) # For parallel processing
-library(tidyr) 
-library(heatwaveR) # For detecting MHWs
-library(doParallel) # For parallel processing
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkb1BhcmFsbGVsKSAjIEZvciBwYXJhbGxlbCBwcm9jZXNzaW5nXG5cbmBgYCJ9 -->
+<pre class="r"><code>library(doParallel) # For parallel processing
 </code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQ2FycmVnYW5kbyBwYWNvdGVzIGV4aWdpZG9zOiBmb3JlYWNoXG5DYXJyZWdhbmRvIHBhY290ZXMgZXhpZ2lkb3M6IGl0ZXJhdG9yc1xuQ2FycmVnYW5kbyBwYWNvdGVzIGV4aWdpZG9zOiBwYXJhbGxlbFxuIn0= -->
+<pre><code>Carregando pacotes exigidos: foreach
+Carregando pacotes exigidos: iterators
+Carregando pacotes exigidos: parallel</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>With our packages loaded we may now begin downloading and preparing
@@ -2061,6 +2046,11 @@ The following object is masked from ‘package:plyr’:
 easy.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5PSVNTVCA8LSByZWFkUkRTKFwiZGF0YS9PSVNTVF8xOTgyLTIwMjMuUmRzXCIpXG5cbmBgYCJ9 -->
+<pre class="r"><code>
+OISST &lt;- readRDS(&quot;data/OISST_1982-2023.Rds&quot;)
+</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -2084,6 +2074,21 @@ methods so we will combine the calculations we want to make into one
 wrapper function.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5ldmVudF9vbmx5IDwtIGZ1bmN0aW9uKGRmKXtcbiAgXG4gICMgRmlyc3QgY2FsY3VsYXRlIHRoZSBjbGltYXRvbG9naWVzXG4gIGNsaW0gPC0gaGVhdHdhdmVSOjp0czJjbG0oZGF0YSA9IGRmLCBjbGltYXRvbG9neVBlcmlvZCA9IGMoXCIxOTgyLTAxLTAxXCIsIFwiMjAxMS0wMS0wMVwiKSlcbiAgXG4gICMgVGhlbiB0aGUgZXZlbnRzXG4gIGV2ZW50IDwtIGhlYXR3YXZlUjo6ZGV0ZWN0X2V2ZW50KGRhdGEgPSBjbGltLCBjb2xkU3BlbGxzID0gVClcbiAgXG4gICMgUmV0dXJuIG9ubHkgdGhlIGV2ZW50IG1ldHJpYyBkYXRhZnJhbWUgb2YgcmVzdWx0c1xuICByZXR1cm4oZXZlbnQkZXZlbnQpXG59XG5cbmBgYCJ9 -->
+<pre class="r"><code>
+event_only &lt;- function(df){
+  
+  # First calculate the climatologies
+  clim &lt;- heatwaveR::ts2clm(data = df, climatologyPeriod = c(&quot;1982-01-01&quot;, &quot;2011-01-01&quot;))
+  
+  # Then the events
+  event &lt;- heatwaveR::detect_event(data = clim, coldSpells = T)
+  
+  # Return only the event metric dataframe of results
+  return(event$event)
+}
+</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>##The dplyr method</p>
@@ -2144,6 +2149,15 @@ Before we do that we must first create the aforementioned stack of
 files.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5mb3IoaSBpbiAxOmxlbmd0aCh1bmlxdWUoT0lTU1QkbG9uKSkpe1xuICBPSVNTVF9zdWIgPC0gT0lTU1QgJT4lIFxuICAgIGZpbHRlcihsb24gPT0gdW5pcXVlKGxvbilbaV0pXG4gIHNhdmVSRFMob2JqZWN0ID0gT0lTU1Rfc3ViLCBmaWxlID0gcGFzdGUwKFwiZGF0YS9PSVNTVF9sb25fXCIsaSxcIi5SZHNcIikpXG59XG5cblxuYGBgIn0= -->
+<pre class="r"><code>
+for(i in 1:length(unique(OISST$lon))){
+  OISST_sub &lt;- OISST %&gt;% 
+    filter(lon == unique(lon)[i])
+  saveRDS(object = OISST_sub, file = paste0(&quot;data/OISST_lon_&quot;,i,&quot;.Rds&quot;))
+}
+</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>This may initially seem like an unnecessary extra step, but when one
