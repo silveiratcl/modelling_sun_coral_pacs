@@ -45,6 +45,7 @@ For this vignette we will be accessing the NOAA OISST dataset on this ERDDAP ser
 
 
 # The packages we will use
+library(plyr)
 library(dplyr) # A staple for modern data management in R
 library(lubridate) # Useful functions for dealing with dates
 library(ggplot2) # The preferred library for data visualisation
@@ -233,10 +234,12 @@ It is a little clumsy to use multiple functions at once with the two methods so 
 event_only <- function(df){
   
   # First calculate the climatologies
-  clim <- heatwaveR::ts2clm(data = df, climatologyPeriod = c("1982-01-01", "2011-01-01"))
+  clim <- heatwaveR::ts2clm(data = df, 
+                            climatologyPeriod = c("1982-01-01","2011-01-01"),
+                            pctile = 90)
   
   # Then the events
-  event <- heatwaveR::detect_event(data = clim, coldSpells = T)
+  event <- heatwaveR::detect_event(data = clim, coldSpells = F)
   
   # Return only the event metric dataframe of results
   return(event$event)
@@ -315,7 +318,7 @@ OISST_files <- dir("data", pattern = "OISST_lon_*", full.names = T)
 # Use 'plyr' technique to run 'dplyr' technique with multiple cores
 system.time(
 MHW_result <- plyr::ldply(OISST_files, .fun = dplyr_wraper, .parallel = T)
-) # 31 seconds #### solved  - Error in do.ply(i) : task 1 failed - "não foi possível encontrar a função "%>%""
+) # 31 seconds #### solved  - loplyr and then dplyr
 
 # Save for later use as desired
 saveRDS(MHW_result, "data/MHW_result.Rds")
@@ -349,6 +352,18 @@ OISST_n <- MHW_result %>%
   tidyr::complete(year = c(1982:2019)) %>% # Note that these dates may differ
   mutate(n = ifelse(is.na(n), 0, n))
 head(OISST_n)
+
+
+OISST_n_total <- OISST_n %>% 
+  group_by(lon, lat) %>% 
+  mutate(total = sum(n))
+head(OISST_n_total)
+
+OISST_n_totalMHW <- OISST_n %>% 
+  group_by(lon, lat) %>% 
+  mutate(total = sum(n))
+head(OISST_n_total)
+
 
 ```
 
@@ -395,19 +410,28 @@ map_slope <- ggplot(OISST_nTrend, aes(x = lon, y = lat)) +
        aes(xmin = lon - 0.1, xmax = lon + 0.1, ymin = lat - 0.1, ymax = lat + 0.1,
            colour = pval)) +
   geom_raster(aes(fill = slope), interpolate = FALSE, alpha = 0.9) +
-  scale_fill_gradient2(name = "count/year (slope)", high = "red", mid = "white",
-                       low = "darkblue", midpoint = 0,
+  scale_fill_gradient2(name = "count/year (slope)",
+                       high = "darkblue",
+                       mid = "white",
+                       low = "blue",
+                       midpoint = 0,
                        guide = guide_colourbar(direction = "horizontal",
-                                               title.position = "top")) +
+                                               title.position = "top",
+                                               n.breaks = 5)) +
+  
   scale_colour_manual(breaks = c("(0,0.001]", "(0.001,0.01]", "(0.01,0.05]", "(0.05,1]"),
-                      values = c("firebrick1", "firebrick2", "firebrick3", "white"),
-                      name = "p-value", guide = FALSE) +
+                      values = c("blue1", "blue2", "blue3", "white"),
+                      name = "p-value", guide = "none") +
   geom_polygon(data = map_base, aes(group = group), 
                colour = NA, fill = "grey80") +
-  coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
+  coord_fixed(ratio = 1, 
+              xlim = c(-49.0, -47.0), 
+              ylim = c(-29, -25), 
+              expand = TRUE) +
   labs(x = "", y = "") +
   theme_bw() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom",
+        legend.text = element_text(angle = 45, hjust = 1))
 
 map_p <- ggplot(OISST_nTrend, aes(x = lon, y = lat)) +
   geom_raster(aes(fill = pval), interpolate = FALSE) +
@@ -429,5 +453,48 @@ map_both <- ggpubr::ggarrange(map_slope, map_p, align = "hv")
 map_both
 ```
 
+# Visualise total number of MCS and MHW
+
+```{r}
+
+map_total<- ggplot(OISST_n_total, aes(x = lon, y = lat)) +
+  geom_rect(linewidth = 0.2, fill = NA,
+       aes(xmin = lon - 0.1, xmax = lon + 0.1, ymin = lat - 0.1, ymax = lat + 0.1)) +
+  geom_raster(aes(fill = total), interpolate = FALSE, alpha = 0.9) +
+  geom_polygon(data = map_base, aes(group = group), 
+               colour = NA, fill = "grey80")+
+  coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
+  scale_fill_distiller(name = "number of MCS",
+                       direction = -1,
+                       guide = guide_colourbar(direction = "horizontal",
+                                               title.position = "top",
+                                               n.breaks = 10)) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+
+map_totalMHW<- ggplot(OISST_n_totalMHW, aes(x = lon, y = lat)) +
+  geom_rect(linewidth = 0.2, fill = NA,
+       aes(xmin = lon - 0.1, xmax = lon + 0.1, ymin = lat - 0.1, ymax = lat + 0.1)) +
+  geom_raster(aes(fill = total), interpolate = FALSE, alpha = 0.9) +
+  geom_polygon(data = map_base, aes(group = group), 
+               colour = NA, fill = "grey80")+
+  coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
+  scale_fill_distiller(name = "number of MHW",
+                       palette = "Spectral",
+                       guide = guide_colourbar(direction = "horizontal",
+                                               title.position = "top",
+                                               n.breaks = 10)) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+
+
+
+map_both_count <- ggpubr::ggarrange(map_total, map_totalMHW, align = "hv")
+map_both_count
+
+
+```
 
 
