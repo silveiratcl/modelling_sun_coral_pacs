@@ -496,5 +496,38 @@ map_both_count
 
 
 ```
+# Creating the  raster layers for modelling
 
+```{r}
+#OISST_n_total
+OISST_n_total_rst <- OISST_n_total %>% 
+  group_by(lon, lat) %>% 
+  mutate(total = sum(n)) %>%
+  select(lon, lat, total) 
+head(OISST_n_total_rst)
+
+# Creating raster marine cold spells
+mcs_rst <- rasterFromXYZ(OISST_n_total_rst)
+plot(mcs_rst)
+
+
+# Creating raster marine heat waves
+OISST_n_totalMHW <- OISST_n_totalMHW %>% 
+  group_by(lon, lat) %>% 
+  mutate(total = sum(n))
+head(OISST_n_total)
+
+
+
+library(raster)
+dfr <- rasterFromXYZ(df)  #Convert first two columns as lon-lat and third as value                
+ plot(dfr)
+ dfr       
+
+
+#OISST_n_totalMHW
+
+
+
+```
 
