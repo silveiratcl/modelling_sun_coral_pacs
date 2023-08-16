@@ -7,14 +7,25 @@
 
 
 ## Definindo o diretório
-setwd("/Users/millenneohanna/Documents/modelagem-pacs")
+setwd("C:/Users/silve/OneDrive/Documentos/Academico/POS-DOC_UFSC/@Karon Coral Sol/sig_monitoring/temp_layers/temperature_layer_noaa")
 
 
 ## Carregamento dos pacotes
+install.packages("raster")
+install.packages("sp")
+install.packages("sf")
+install.packages("gtools")
+install.packages("terra")
+install.packages("car")
+install.packages("psych")
+install.packages("mgcv")
+install.packages("biomod2")
+
 library(raster)
-library(rgdal)
+library(sf)
 library(sp)
 library(gtools)
+library(terra)
 library(car)
 library(psych)
 library(mgcv)
@@ -22,29 +33,29 @@ library(biomod2)
 
 
 ## Carregando os dados de ocorrência e ausência
-dfocc <- read.table("./occ_abs_cs/occ_model.csv", header = T, sep = ";", dec = ",")
+dfocc <- read.table("./model_data/occ_abs_cs/occ_model.csv", header = T, sep = ";", dec = ",")
 head(dfocc)
 
-dfabs <- read.table("./occ_abs_cs/abs_model.csv", header = T, sep = ";", dec = ",")
+dfabs <- read.table("./model_data/occ_abs_cs/abs_model.csv", header = T, sep = ";", dec = ",")
 head(dfabs)
 
-df <- read.table("./occ_abs_cs/occ_abs_model.csv", header = T, sep = ";", dec = ",")
+df <- read.table("./model_data/occ_abs_cs/occ_abs_model.csv", header = T, sep = ";", dec = ",")
 head(df)
 
 
 ## Carregando as camadas máscaras
-study_area <- readOGR("./study_area", "study_area")
-ocean <- readOGR("./study_area", "ocean_study_area")
-land <- readOGR("./study_area", "land_study_area")
+study_area <- readOGR("./model_data/study_area", "study_area")
+ocean <- readOGR("./model_data/study_area", "ocean_study_area")
+land <- readOGR("./model_data/study_area", "land_study_area")
 
 
 ## Carregando as variáveis
-bat <- raster("./variables/bat_resampled.tif")
-velc <- raster("./variables/velc_null.tif")
-sst <- raster("./variables/sst_null.tif")
-d_cost <- raster("./variables/d_cost_resampled.tif")
-d_mar <- raster("./variables/d_mar_resampled.tif")
-d_traf <- raster("./variables/d_traf_resampled.tif")
+bat <- raster("./model_data/variables/bat_resampled.tif") # ok
+velc <- raster("./model_data/variables/velc_null.tif") # ok
+sst <- raster("./model_data/variables/sst_null.tif") # ok
+d_cost <- raster("./model_data/variables/d_cost_resampled.tif") #ok
+d_mar <- raster("./model_data/variables/d_mar_resampled.tif") # ok
+d_traf <- raster("./model_data/variables/d_traf_resampled.tif") # ok 
 
 
 ## Filtro de proximidade
@@ -79,8 +90,8 @@ newdata_occ <- filterByProximity(as.matrix(dfocc), dist = 0.5, mapUnits = F)
 str(newdata_occ)
 as.data.frame(newdata_occ)
 colnames(newdata_occ)<-c('lon_dd','lat_dd')
-write.csv(newdata_occ, "./occ_abs_cs/occ_filtered.csv")
-dfocc <- read.table("./occ_abs_cs/occ_filtered.csv", header = T, sep = ",")
+write.csv(newdata_occ, "./model_data/occ_abs_cs/occ_filtered.csv")
+dfocc <- read.table("./model_data/occ_abs_cs/occ_filtered.csv", header = T, sep = ",")
 dfocc$X <- NULL
 names(dfocc) <- c ('lon_dd', 'lat_dd')
 head(dfocc)
@@ -89,16 +100,16 @@ newdata_abs <- filterByProximity(as.matrix(dfabs), dist = 0.5, mapUnits = F)
 str(newdata_abs)
 as.data.frame(newdata_abs)
 colnames(newdata_abs)<-c('lon_dd','lat_dd')
-write.csv(newdata_abs, "./occ_abs_cs/abs_filtered.csv")
-dfabs <- read.table("./occ_abs_cs/abs_filtered.csv", header = T, sep = ",")
+write.csv(newdata_abs, "./model_data/occ_abs_cs/abs_filtered.csv")
+dfabs <- read.table("./model_data/occ_abs_cs/abs_filtered.csv", header = T, sep = ",")
 dfabs$X <- NULL
 names(dfabs) <- c ('lon_dd', 'lat_dd')
 head(dfabs)
 
 occ_abs <- c(rep(1, nrow(dfocc)), rep(0, nrow(dfabs)))
 df <- data.frame(cbind(occ_abs, rbind(dfocc, dfabs)))
-write.csv(df, "./occ_abs_cs/occ_abs_filtered.csv")
-df <- read.table("./occ_abs_cs/occ_abs_filtered.csv", header = T, sep = ",")
+write.csv(df, "./model_data/occ_abs_cs/occ_abs_filtered.csv")
+df <- read.table("./model_data/occ_abs_cs/occ_abs_filtered.csv", header = T, sep = ",")
 df$X <- NULL
 names(df) <- c ('occ_abs', 'lon_dd', 'lat_dd')
 head(df)
@@ -120,13 +131,14 @@ head(sdmdata)
 tail(sdmdata)
 summary(sdmdata)
 
-saveRDS(sdmdata, "./occ_abs_cs/sdm.Rds")
-saveRDS(occvals, "./occ_abs_cs/occvals.Rds")
-saveRDS(absvals, "./occ_abs_cs/absvals.Rds")
+saveRDS(sdmdata, "./model_data/occ_abs_cs/sdm.Rds")
+saveRDS(occvals, "./model_data/occ_abs_cs/occvals.Rds")
+saveRDS(absvals, "./model_data/occ_abs_cs/absvals.Rds")
 
 
 ## Examinando as correlações entre as variáveis
-myData <- sdmdata
+
+myData <- readRDS(file = "./model_data/occ_abs_cs/sdm.Rds")
 describe(myData[,c(2:7)])
 
 pairs.panels(myData[,c(2:7)],pch='.')
