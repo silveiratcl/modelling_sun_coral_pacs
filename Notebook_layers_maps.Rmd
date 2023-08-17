@@ -1,0 +1,176 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(ggplot2)
+library(raster)
+library(tidyverse)
+
+bat <- raster("./model_data/variables/bat_resampled.tif") # ok
+velc <- raster("./model_data/variables/velc_null.tif") # ok
+sst <- raster("./model_data/variables/sst_null.tif") # ok
+d_cost <- raster("./model_data/variables/d_cost_resampled.tif") #ok
+d_mar <- raster("./model_data/variables/d_mar_resampled.tif") # ok
+d_traf <- raster("./model_data/variables/d_traf_resampled.tif") # ok
+
+```
+
+
+```{r}
+map_base <- ggplot2::fortify(maps::map(fill = TRUE, plot = FALSE)) %>% 
+  dplyr::rename(lon = long)
+```
+
+
+
+
+
+```{r}
+bat_df <- as.data.frame(bat, xy = T, na.rm = T)
+names(bat_df)<- c("lon", "lat", "bat")
+
+bat_map<- ggplot(bat_df, aes(x = lon, y = lat)) +
+  geom_rect(linewidth = 0.2, fill = NA,
+       aes(xmin = lon - 0.1, xmax = lon + 0.1, ymin = lat - 0.1, ymax = lat + 0.1)) +
+  geom_raster(aes(fill = bat), interpolate = FALSE, alpha = 0.9) +
+  geom_polygon(data = map_base, aes(group = group), 
+               colour = NA, fill = "grey80")+
+  coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
+  scale_fill_distiller(name = "Batimetria(m)",
+                       direction = -1,
+                       guide = guide_colourbar(direction = "horizontal",
+                                               title.position = "top",
+                                               n.breaks = 10)) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+bat_map
+
+
+```
+```{r}
+velc_df <- as.data.frame(velc, xy = T, na.rm = T)
+names(velc_df)<- c("lon", "lat", "velc")
+
+velc_map<- ggplot(bat_df, aes(x = lon, y = lat)) +
+  geom_rect(linewidth = 0.2, fill = NA,
+       aes(xmin = lon - 0.1, xmax = lon + 0.1, ymin = lat - 0.1, ymax = lat + 0.1)) +
+  geom_raster(aes(fill = velc), interpolate = FALSE, alpha = 0.9) +
+  geom_polygon(data = map_base, aes(group = group), 
+               colour = NA, fill = "grey80")+
+  coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
+  scale_fill_distiller(name = "Veocidade de corrente(m/s)",
+                       palette = "Spectral",
+                       guide = guide_colourbar(direction = "horizontal",
+                                               title.position = "top",
+                                               n.breaks = 10)) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+velc_map
+
+
+```
+```{r}
+sst_df <- as.data.frame(sst, xy = T, na.rm = T)
+names(sst_df)<- c("lon", "lat", "sst")
+
+sst_map<- ggplot(bat_df, aes(x = lon, y = lat)) +
+  geom_rect(linewidth = 0.2, fill = NA,
+       aes(xmin = lon - 0.1, xmax = lon + 0.1, ymin = lat - 0.1, ymax = lat + 0.1)) +
+  geom_raster(aes(fill = sst), interpolate = FALSE, alpha = 0.9) +
+  geom_polygon(data = map_base, aes(group = group), 
+               colour = NA, fill = "grey80")+
+  coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
+  scale_fill_distiller(name = "Batimetria(m)",
+                       direction = -1,
+                       palette = "Spectral",
+                       guide = guide_colourbar(direction = "horizontal",
+                                               title.position = "top",
+                                               n.breaks = 10)) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+bat_map
+
+
+```
+```{r}
+dcost_df <- as.data.frame(d_cost, xy = T, na.rm = T)
+names(dcost_df)<- c("lon", "lat", "dcost")
+
+dcost_map<- ggplot(dcost_df, aes(x = lon, y = lat)) +
+  geom_rect(linewidth = 0.2, fill = NA,
+       aes(xmin = lon - 0.1, xmax = lon + 0.1, ymin = lat - 0.1, ymax = lat + 0.1)) +
+  geom_raster(aes(fill = dcost), interpolate = FALSE, alpha = 0.9) +
+  geom_polygon(data = map_base, aes(group = group), 
+               colour = NA, fill = "grey80")+
+  coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
+  scale_fill_distiller(name = "Distancia da Costa(m)",
+                       direction = -1,
+                       palette = "Spectral",
+                       guide = guide_colourbar(direction = "horizontal",
+                                               title.position = "top",
+                                               n.breaks = 10)) +
+  theme_bw() +
+  theme(legend.position = "bottom",
+        legend.text = element_text(angle = 45, hjust = 1))
+
+dcost_map
+
+
+```
+```{r}
+dmar_df <- as.data.frame(d_mar, xy = T, na.rm = T)
+names(dmar_df)<- c("lon", "lat", "dmar")
+
+dmar_map<- ggplot(dmar_df, aes(x = lon, y = lat)) +
+  geom_rect(linewidth = 0.2, fill = NA,
+       aes(xmin = lon - 0.1, xmax = lon + 0.1, ymin = lat - 0.1, ymax = lat + 0.1)) +
+  geom_raster(aes(fill = dmar), interpolate = FALSE, alpha = 0.9) +
+  geom_polygon(data = map_base, aes(group = group), 
+               colour = NA, fill = "grey80")+
+  coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
+  scale_fill_distiller(name = "Distancia de Portos e MArinas",
+                       direction = -1,
+                       palette = "Spectral",
+                       guide = guide_colourbar(direction = "horizontal",
+                                               title.position = "top",
+                                               n.breaks = 10)) +
+  theme_bw() +
+  theme(legend.position = "bottom",
+        legend.text = element_text(angle = 45, hjust = 1))
+
+dmar_map
+
+
+```
+
+```{r}
+dtraf_df <- as.data.frame(d_traf, xy = T, na.rm = T)
+names(dtraf_df)<- c("lon", "lat", "dtraf")
+
+dtraf_map<- ggplot(dtraf_df, aes(x = lon, y = lat)) +
+  geom_rect(linewidth = 0.2, fill = NA,
+       aes(xmin = lon - 0.1, xmax = lon + 0.1, ymin = lat - 0.1, ymax = lat + 0.1)) +
+  geom_raster(aes(fill = dtraf), interpolate = FALSE, alpha = 0.9) +
+  geom_polygon(data = map_base, aes(group = group), 
+               colour = NA, fill = "grey80")+
+  coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
+  scale_fill_distiller(name = "Distancia Rotas Tráfego Marinho (m)",
+                       direction = -1,
+                       palette = "Spectral",
+                       guide = guide_colourbar(direction = "horizontal",
+                                               title.position = "top",
+                                               n.breaks = 10)) +
+  theme_bw() +
+  theme(legend.position = "bottom",
+        legend.text = element_text(angle = 45, hjust = 1))
+
+dtraf_map
+
+
+```
+
