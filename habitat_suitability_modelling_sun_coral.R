@@ -44,9 +44,9 @@ head(df)
 
 
 ## Carregando as camadas máscaras
-study_area <- readOGR("./model_data/study_area", "study_area")
-ocean <- readOGR("./model_data/study_area", "ocean_study_area")
-land <- readOGR("./model_data/study_area", "land_study_area")
+study_area <- st_read("./model_data/study_area", "study_area")
+ocean <- st_read("./model_data/study_area", "ocean_study_area")
+land <- st_read("./model_data/study_area", "land_study_area")
 
 
 ## Carregando as variáveis
@@ -189,43 +189,50 @@ myBiomodOption
 ## Computando os modelos
 myBiomodModelOut1 <- BIOMOD_Modeling(myBiomodData1,
                                      models = c('GLM','RF'),
-                                     models.options = myBiomodOption,
-                                     NbRunEval=12,
-                                     DataSplit=70,
-                                     Prevalence=0.5,
-                                     VarImport=3,
-                                     models.eval.meth = c('ROC'),
-                                     SaveObj = TRUE,
-                                     rescal.all.models = TRUE,
-                                     do.full.models = FALSE,
-                                     modeling.id = paste(myRespName,"Model1",sep=""))
+                                     bm.options = myBiomodOption,
+                                     CV.nb.rep = 12,
+                                     CV.strategy = "random",
+                                     CV.perc = 0.7,
+                                     prevalence = 0.5,
+                                     var.import = 3,
+                                     metric.eval = c('ROC'),
+                                     scale.models = TRUE,
+                                     CV.do.full.models = FALSE,
+                                     modeling.id = 'Model1',
+                                     seed.val = 42)
+
+
+
+
+
 myBiomodModelOut1
 
 myBiomodModelOut2 <- BIOMOD_Modeling(myBiomodData2,
                                      models = c('GLM','RF'),
-                                     models.options = myBiomodOption,
-                                     NbRunEval=12,
-                                     DataSplit=70,
-                                     Prevalence=0.5,
-                                     VarImport=3,
-                                     models.eval.meth = c('ROC'),
-                                     SaveObj = TRUE,
-                                     rescal.all.models = TRUE,
-                                     do.full.models = FALSE,
+                                     bm.options = myBiomodOption,
+                                     CV.nb.rep = 12,
+                                     CV.strategy = "random",
+                                     CV.perc = 0.7,
+                                     prevalence = 0.5,
+                                     var.import=3,
+                                     metric.eval = c('ROC'),
+                                     #SaveObj = TRUE,
+                                     scale.models = TRUE,
+                                     CV.do.full.models = FALSE,
                                      modeling.id = paste(myRespName,"Model2",sep=""))
 myBiomodModelOut2
 
 myBiomodModelOut3 <- BIOMOD_Modeling(myBiomodData3,
                                      models = c('GLM','RF'),
-                                     models.options = myBiomodOption,
-                                     NbRunEval=12,
-                                     DataSplit=70,
-                                     Prevalence=0.5,
-                                     VarImport=3,
-                                     models.eval.meth = c('ROC'),
-                                     SaveObj = TRUE,
-                                     rescal.all.models = TRUE,
-                                     do.full.models = FALSE,
+                                     bm.options = myBiomodOption,
+                                     CV.nb.rep = 12,
+                                     CV.perc = 0.7,
+                                     prevalence = 0.5,
+                                     var.import=3,
+                                     metric.eval = c('ROC'),
+                                     #SaveObj = TRUE,
+                                     scale.models = TRUE,
+                                     CV.do.full.models = FALSE,
                                      modeling.id = paste(myRespName,"Model3",sep=""))
 myBiomodModelOut3
 
@@ -235,11 +242,21 @@ myBiomodModelEval1 <- get_evaluations(myBiomodModelOut1)
 myBiomodModelEval2 <- get_evaluations(myBiomodModelOut2)
 myBiomodModelEval3 <- get_evaluations(myBiomodModelOut3)
 
+###
+bm_PlotEvalMean(bm.out = myBiomodModelOut1)
+
+
+
+###
+                
+
+
 
 ## Imprimindo os valores ROC de todos os modelos
-myBiomodModelEval1["ROC","Testing.data","GLM",,]
-meanGLM1 <- mean(myBiomodModelEval1["ROC","Testing.data","GLM",,])
+myBiomodModelEval1["ROC","Testing.data","RF",,]
+meanGLM1 <- mean(myBiomodModelEval1["ROC","Testing.data","RF",,])
 desvGLM1 <- sd(myBiomodModelEval1["ROC","Testing.data","GLM",,])
+
 myBiomodModelEval1["ROC","Testing.data","RF",,]
 meanRF1 <- mean(myBiomodModelEval1["ROC","Testing.data","RF",,])
 desvRF1 <- sd(myBiomodModelEval1["ROC","Testing.data","RF",,])
