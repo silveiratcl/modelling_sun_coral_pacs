@@ -24,9 +24,6 @@ map_base <- ggplot2::fortify(maps::map(fill = TRUE, plot = FALSE)) %>%
 ```
 
 
-
-
-
 ```{r}
 bat_df <- as.data.frame(bat, xy = T, na.rm = T)
 names(bat_df)<- c("lon", "lat", "bat")
@@ -48,8 +45,13 @@ bat_map<- ggplot(bat_df, aes(x = lon, y = lat)) +
 
 bat_map
 
-
 ```
+
+
+
+
+
+
 ```{r}
 velc_df <- as.data.frame(velc, xy = T, na.rm = T)
 names(velc_df)<- c("lon", "lat", "velc")
@@ -77,14 +79,14 @@ velc_map
 sst_df <- as.data.frame(sst, xy = T, na.rm = T)
 names(sst_df)<- c("lon", "lat", "sst")
 
-sst_map<- ggplot(bat_df, aes(x = lon, y = lat)) +
+sst_map<- ggplot(sst_df, aes(x = lon, y = lat)) +
   geom_rect(linewidth = 0.2, fill = NA,
        aes(xmin = lon - 0.1, xmax = lon + 0.1, ymin = lat - 0.1, ymax = lat + 0.1)) +
   geom_raster(aes(fill = sst), interpolate = FALSE, alpha = 0.9) +
   geom_polygon(data = map_base, aes(group = group), 
                colour = NA, fill = "grey80")+
   coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
-  scale_fill_distiller(name = "Batimetria(m)",
+  scale_fill_distiller(name = "SST(°C)",
                        direction = -1,
                        palette = "Spectral",
                        guide = guide_colourbar(direction = "horizontal",
@@ -93,7 +95,7 @@ sst_map<- ggplot(bat_df, aes(x = lon, y = lat)) +
   theme_bw() +
   theme(legend.position = "bottom")
 
-bat_map
+sst_map
 
 
 ```

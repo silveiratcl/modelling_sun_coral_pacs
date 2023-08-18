@@ -19,8 +19,13 @@ install.packages("terra")
 install.packages("car")
 install.packages("psych")
 install.packages("mgcv")
-install.packages("biomod2")
+#install.packages("biomod2")
+install.packages("Rtools")
 
+devtools::install_github('biomodhub/biomod2')
+
+
+library(Rtools)
 library(raster)
 library(sf)
 library(sp)
@@ -155,8 +160,10 @@ predictors1 <- variables
 names(predictors1) <- c ('bat', 'velc', 'sst', 'd_cost', 'd_mar', 'd_traf')
 predictors1
 
-predictors2 <- stack(variables$bat, variables$velc, variables$sst, variables$d_cost, variables$d_mar)
-names(predictors2) <- c ('bat', 'velc', 'sst', 'd_cost', 'd_mar')
+predictors2 <- stack(variables$d_cost, variables$d_mar)
+#predictors2 <- stack(variables$bat, variables$velc, variables$sst, variables$d_cost, variables$d_mar)
+names(predictors2) <- c ('d_cost', 'd_mar')
+#names(predictors2) <- c ('bat', 'velc', 'sst', 'd_cost', 'd_mar')
 predictors2
 
 predictors3 <- stack(variables$bat, variables$velc, variables$d_cost, variables$d_mar, variables$d_traf)
@@ -195,7 +202,7 @@ myBiomodModelOut1 <- BIOMOD_Modeling(myBiomodData1,
                                      CV.perc = 0.7,
                                      prevalence = 0.5,
                                      var.import = 3,
-                                     metric.eval = c('ROC'),
+                                     metric.eval = c('ROC', 'TSS'),
                                      scale.models = TRUE,
                                      CV.do.full.models = FALSE,
                                      modeling.id = 'Model1',
@@ -207,6 +214,20 @@ myBiomodModelOut1 <- BIOMOD_Modeling(myBiomodData1,
 
 myBiomodModelOut1
 
+#myBiomodModelOut2 <- BIOMOD_Modeling(myBiomodData2,
+#                                     models = c('GLM','RF'),
+#                                     bm.options = myBiomodOption,
+#                                     CV.nb.rep = 12,
+#                                     CV.strategy = "random",
+#                                     CV.perc = 0.7,
+#                                     prevalence = 0.5,
+#                                     var.import=3,
+#                                     metric.eval = c('ROC'),
+                                     #SaveObj = TRUE,
+#                                     scale.models = TRUE,
+#                                    CV.do.full.models = FALSE,
+#                                     modeling.id = paste(myRespName,"Model2",sep=""))
+
 myBiomodModelOut2 <- BIOMOD_Modeling(myBiomodData2,
                                      models = c('GLM','RF'),
                                      bm.options = myBiomodOption,
@@ -214,12 +235,16 @@ myBiomodModelOut2 <- BIOMOD_Modeling(myBiomodData2,
                                      CV.strategy = "random",
                                      CV.perc = 0.7,
                                      prevalence = 0.5,
-                                     var.import=3,
-                                     metric.eval = c('ROC'),
-                                     #SaveObj = TRUE,
+                                     var.import = 3,
+                                     metric.eval = c('ROC', 'TSS'),
                                      scale.models = TRUE,
                                      CV.do.full.models = FALSE,
-                                     modeling.id = paste(myRespName,"Model2",sep=""))
+                                     modeling.id = 'Model2',
+                                     seed.val = 42)
+
+
+
+
 myBiomodModelOut2
 
 myBiomodModelOut3 <- BIOMOD_Modeling(myBiomodData3,
@@ -243,10 +268,8 @@ myBiomodModelEval2 <- get_evaluations(myBiomodModelOut2)
 myBiomodModelEval3 <- get_evaluations(myBiomodModelOut3)
 
 ###
-bm_PlotEvalMean(bm.out = myBiomodModelOut1)
-
-
-
+bm_PlotEvalMean(bm.out = myBiomodModelOut2, metric.eval = c("ROC", "TSS"))
+bm_PlotEvalBoxplot(bm.out = myBiomodModelOut2, group.by = c('algo', 'run'))
 ###
                 
 

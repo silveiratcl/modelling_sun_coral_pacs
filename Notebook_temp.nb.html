@@ -1811,17 +1811,15 @@ install the problem package and run it before trying to load the library
 again.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5cikgXG5cbmBgYCJ9 -->
-<pre class="r"><code>library(tidyr) 
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUaGUgcGFja2FnZXMgd2Ugd2lsbCBuZWVkXG4jIGluc3RhbGwucGFja2FnZXMoXCJkcGx5clwiKVxuIyBpbnN0YWxsLnBhY2thZ2VzKFwibHVicmlkYXRlXCIpXG4gaW5zdGFsbC5wYWNrYWdlcyhcImdncGxvdDJcIilcblxuYGBgIn0= -->
+<pre class="r"><code># The packages we will need
+# install.packages(&quot;dplyr&quot;)
+# install.packages(&quot;lubridate&quot;)
+ install.packages(&quot;ggplot2&quot;)
 </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYdGlkeXLigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpyYXN0ZXLigJk6XG5cbiAgICBleHRyYWN0XG4ifQ== -->
-<pre><code>
-Attaching package: ‘tidyr’
-
-The following object is masked from ‘package:raster’:
-
-    extract</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gaW5zdGFsbC5wYWNrYWdlcyA6IFVwZGF0aW5nIGxvYWRlZCBwYWNrYWdlc1xuIn0= -->
+<pre><code>Error in install.packages : Updating loaded packages</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2266,15 +2264,13 @@ head(OISST_n_total)
 <p>Then we specify the particulars of the GLM we are going to use.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGluX2Z1biA8LSBmdW5jdGlvbihldikge1xuICBtb2QxIDwtIGdsbShuIH4geWVhciwgZmFtaWx5ID0gcG9pc3NvbihsaW5rID0gXCJsb2dcIiksIGRhdGEgPSBldilcbiAgIyBleHRyYWN0IHNsb3BlIGNvZWZmaWNpZW50IGFuZCBpdHMgcC12YWx1ZVxuICB0ciA8LSBkYXRhLmZyYW1lKHNsb3BlID0gc3VtbWFyeShtb2QxKSRjb2VmZmljaWVudHNbMiwxXSxcbiAgICAgICAgICAgICAgICAgICBwID0gc3VtbWFyeShtb2QxKSRjb2VmZmljaWVudHNbMiw0XSlcbiAgcmV0dXJuKHRyKVxufVxuYGBgIn0= -->
-<pre class="r"><code>lin_fun &lt;- function(ev) {
-  mod1 &lt;- glm(n ~ year, family = poisson(link = &quot;log&quot;), data = ev)
-  # extract slope coefficient and its p-value
-  tr &lt;- data.frame(slope = summary(mod1)$coefficients[2,1],
-                   p = summary(mod1)$coefficients[2,4])
-  return(tr)
-}</code></pre>
-<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6NDgsIm5jb2wiOjUsInN1bW1hcnkiOnsiRGVzY3JpcHRpb24iOlsiZGYgWzQ4IMOXIDVdIl19fSwicmRmIjoiSDRzSUFBQUFBQUFBQnQxV2VWQlRaeEIvdVRDRUNoU0VDa2loT2xaclNCcU1IQkthcjRvSU0vV2tsS0VEVmdJR0FVTVNrM0NNVjdXQTFRS2FnSVpnaklsVXB5Tkl0WmRpUGRiYWNncXhqTFY0dGFBT2FCRThCckZtNU9nTGVZOWlocGs2L3NFZi9XTm5kMy83KzNhL2Zmdm03WXRaRk05bnhiTXdES05oZENvTm96RndFMk44Rkx1WUU0cmhDTzVRTURybWFOVzVPTW5kR3NYRkdSZmUrV2k1bFkzOXExZThvdVpOa0hhZEdCMzFhRUkwUnM0aHZNT0doNXNJYmU4bkVkcmZwc09JZUJnUkQwdDZ1WE1DSWk0ZzRnSWlMdmlQdkdGRWZENlovLzlWQnlQbUFMdWUxSG1lMXpSQVlZZlozVGRqRitpYUZ0NG9EU3VITW5iZWQxdk5XNkRzN3ZibHdnUXBGQ1d1U0l6Vlg0Y3ZCbjVmVXM4c0JmWHRmbFBTNm5EUVRrZm4wcmVwd1JqSlR2M2gxMEVvdTNVbHNMUDZVOUF0N056Ui9XWSthUG16TGp3NjFBNWxNYksyZ2ZwaTBNN1VITHZ6ekFmMFBvZUhuOU5pUUV2ZDF0cm1OUXdsbnU2Y2JHNFhsTVpaTHA3enhHRGZaNTk0NlowcndlQW9XOWZMYkFhOVlZZkgxV28zcUZDNWRXdytPZ2dIaTNtM3ZWMUtRSitqWGZmTy9XV2dyWXpjQkxOYVFCZklDUTQ5ZVJNTUhSMDlQUU4rWUF5OHpkNTR4UWtNckxNVk41TGlZYytnZEhGVndXWFFlU290NFZ2TVlPaVNKMjFQMTRFcGFNT1J2bUFXSEtBMXRpNDdQUXlWaWc5V042NXNoYThlSGZsRnpmOGJLbXBYUGhBLzk0Y0RjOVd1ZVZQRmNQREhLZVhyRno4R2srTmhuODNSeFdCNi8zQ0E4WTBaWU5JbmxJV2dDdGpma3VqZDVHdUcvUzZOQ2JWUmthRHZOODgyaGtTQUtYdFZhTTI3TjZDaTUwTjJwcjZVbkFNNnRGVVpNWWNYajc2TzVONUtyTTFEY1E5M0JyamNLVUJwVTFrdHFmT3ZvVlZ1S2FLelQ1dFE1ZEFTVG5XaEVaM1E3TDAyN1dvaCtyTHdRSG0wZmgvS2xtaHVlbGN0Ulg2eHBnTHg5VTZVN0pBMnZYNWVLa284a2RCMHBzNk1wTGtST3g5R1lDaVo4aGI5bXpPN2tkeHg4ejJsWkRkYTBPZDZxUWg2VU00R3kvS1ZwelJvVDlTbDdaUG9xVWpqUlk5cnNGU2p1THFoNmUwMVRDUm9ZNjA5SHBXTFlnVEc0SUlxaS9EbUhxWmZWbHUrc0V1cCtHMXZjU1FLV1orWjhIbGRQTXBnZkUrL2ZIMEpTa2FXdTdSUUFaclpmVkxuZnJ3VStVNDJ1SjUvMG8vNFp4eCs4cTdtb1FKaDJuditwMnRSeW9tZkgvZFpBUEc5Mk5FYjUyeEN2cUdEMy9wZE9JaENMM3J4dTZmMkNLZEZsS3ZEWEo0S28rL1BvSGowK2docm5KeU92YjMwS1BLZTFkQTEvSENmc0t2M21iOC9sWWxldDhoODcwMDJJaWZWeDBYOStTc1FzOGE5cE5CN0wxclEvTWVEUHpOb2FCSGIwSzh1eVVSUjdnWGJkTTV1eUc5VHM4ZXBxZzNDdndhNEtvLzJLZmllbUd5ZEEyYmRLdmdXd1lVNlJ1aUUwQWlmWWhlbjJ1RzBjYmlVTVVJZEI2T05nNzJDdkxBQUhTVGliTEZFaVZ1dUl4M1lVTWZadkFBZWw4Y0xYRVVBcjgwZWNhM2dLT1preFVhZ0lCSmlXcUdnQUp6eVloVkdpa1NrSkl1TWxrNFZwYWhrQ3R3YXNxZExSWmxpa3M0Z1FKcEVKaDAxUlNxU3FwVEk1R0p5bThzSmd5N1BGa25za2pvcVpEbGNNckYxbE5TdHRzOGN6MGFrRGR2ZGo3VkdwQkp4VXhYNGtYSHVPRWttVjZYTHBIZ3lLdm4vTVBZd1JXRUh1R1pKcmNYWGNGTFNzcVRyT0hQbldTc1FROEdJRzFHSUY0eTBHYmFhZFBKbTVLTndFRXZYcGt2SnJoa1NVYkpZUWpqT2VKY2pUWExsaW5RcCtaUllPS3JrcW1RcUVjbGpwY2drSkRMU0hEYjBEK2pYSjNZM0NRQUEifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["lon"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["lat"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["slope"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["p"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["pval"],"name":[5],"type":["fctr"],"align":["left"]}],"data":[{"1":"-48.875","2":"-28.875","3":"-0.01511531","4":"4.004250e-02","5":"(0.01,0.05]"},{"1":"-48.875","2":"-28.625","3":"-0.01361238","4":"5.912158e-02","5":"(0.05,1]"},{"1":"-48.625","2":"-28.875","3":"-0.02420907","4":"1.399883e-03","5":"(0.001,0.01]"},{"1":"-48.625","2":"-28.625","3":"-0.02262693","4":"2.941152e-03","5":"(0.001,0.01]"},{"1":"-48.625","2":"-28.375","3":"-0.02334413","4":"1.774404e-03","5":"(0.001,0.01]"},{"1":"-48.625","2":"-28.125","3":"-0.01384795","4":"5.272139e-02","5":"(0.05,1]"},{"1":"-48.625","2":"-26.875","3":"-0.01317756","4":"8.815896e-02","5":"(0.05,1]"},{"1":"-48.625","2":"-26.625","3":"-0.01649078","4":"3.817459e-02","5":"(0.01,0.05]"},{"1":"-48.625","2":"-26.375","3":"-0.02161502","4":"5.474634e-03","5":"(0.001,0.01]"},{"1":"-48.375","2":"-28.875","3":"-0.03053730","4":"1.195167e-04","5":"(0,0.001]"},{"1":"-48.375","2":"-28.625","3":"-0.02332242","4":"2.200321e-03","5":"(0.001,0.01]"},{"1":"-48.375","2":"-28.375","3":"-0.02369269","4":"1.752462e-03","5":"(0.001,0.01]"},{"1":"-48.375","2":"-28.125","3":"-0.02167952","4":"3.719456e-03","5":"(0.001,0.01]"},{"1":"-48.375","2":"-27.875","3":"-0.02277541","4":"2.197804e-03","5":"(0.001,0.01]"},{"1":"-48.375","2":"-27.625","3":"-0.02162769","4":"3.915302e-03","5":"(0.001,0.01]"},{"1":"-48.375","2":"-27.375","3":"-0.02647266","4":"5.477745e-04","5":"(0,0.001]"},{"1":"-48.375","2":"-27.125","3":"-0.02149394","4":"5.732511e-03","5":"(0.001,0.01]"},{"1":"-48.375","2":"-26.875","3":"-0.01766233","4":"1.980519e-02","5":"(0.01,0.05]"},{"1":"-48.375","2":"-26.625","3":"-0.01888647","4":"1.669699e-02","5":"(0.01,0.05]"},{"1":"-48.375","2":"-26.375","3":"-0.02588794","4":"1.390217e-03","5":"(0.001,0.01]"},{"1":"-48.375","2":"-26.125","3":"-0.02835631","4":"4.248047e-04","5":"(0,0.001]"},{"1":"-48.375","2":"-25.875","3":"-0.02696812","4":"1.112848e-03","5":"(0.001,0.01]"},{"1":"-48.125","2":"-28.875","3":"-0.03604182","4":"6.813586e-06","5":"(0,0.001]"},{"1":"-48.125","2":"-28.625","3":"-0.03428033","4":"1.070546e-05","5":"(0,0.001]"},{"1":"-48.125","2":"-28.375","3":"-0.02682338","4":"3.577129e-04","5":"(0,0.001]"},{"1":"-48.125","2":"-28.125","3":"-0.02213391","4":"3.176548e-03","5":"(0.001,0.01]"},{"1":"-48.125","2":"-27.875","3":"-0.02362509","4":"2.227772e-03","5":"(0.001,0.01]"},{"1":"-48.125","2":"-27.625","3":"-0.02917816","4":"1.672124e-04","5":"(0,0.001]"},{"1":"-48.125","2":"-27.375","3":"-0.03046373","4":"1.108291e-04","5":"(0,0.001]"},{"1":"-48.125","2":"-27.125","3":"-0.02836129","4":"3.011242e-04","5":"(0,0.001]"},{"1":"-48.125","2":"-26.875","3":"-0.02049801","4":"1.037294e-02","5":"(0.01,0.05]"},{"1":"-48.125","2":"-26.625","3":"-0.02352315","4":"2.406485e-03","5":"(0.001,0.01]"},{"1":"-48.125","2":"-26.375","3":"-0.02919937","4":"2.914172e-04","5":"(0,0.001]"},{"1":"-48.125","2":"-26.125","3":"-0.03165801","4":"1.114755e-04","5":"(0,0.001]"},{"1":"-48.125","2":"-25.875","3":"-0.02931133","4":"3.783165e-04","5":"(0,0.001]"},{"1":"-47.875","2":"-28.875","3":"-0.05165325","4":"1.645185e-09","5":"(0,0.001]"},{"1":"-47.875","2":"-28.625","3":"-0.04675799","4":"1.160358e-08","5":"(0,0.001]"},{"1":"-47.875","2":"-28.375","3":"-0.03666168","4":"1.433083e-06","5":"(0,0.001]"},{"1":"-47.875","2":"-28.125","3":"-0.02948976","4":"9.977497e-05","5":"(0,0.001]"},{"1":"-47.875","2":"-27.875","3":"-0.03462281","4":"1.093367e-05","5":"(0,0.001]"},{"1":"-47.875","2":"-27.625","3":"-0.03132359","4":"6.856671e-05","5":"(0,0.001]"},{"1":"-47.875","2":"-27.375","3":"-0.03174320","4":"5.236529e-05","5":"(0,0.001]"},{"1":"-47.875","2":"-27.125","3":"-0.03243529","4":"4.714784e-05","5":"(0,0.001]"},{"1":"-47.875","2":"-26.875","3":"-0.02812714","4":"5.432209e-04","5":"(0,0.001]"},{"1":"-47.875","2":"-26.625","3":"-0.02740397","4":"6.155511e-04","5":"(0,0.001]"},{"1":"-47.875","2":"-26.375","3":"-0.02730486","4":"7.042314e-04","5":"(0,0.001]"},{"1":"-47.875","2":"-26.125","3":"-0.03215305","4":"1.201152e-04","5":"(0,0.001]"},{"1":"-47.875","2":"-25.875","3":"-0.03695927","4":"1.239065e-05","5":"(0,0.001]"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[48]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Lastly we make the calculations.</p>
