@@ -56,14 +56,14 @@ bat_map
 velc_df <- as.data.frame(velc, xy = T, na.rm = T)
 names(velc_df)<- c("lon", "lat", "velc")
 
-velc_map<- ggplot(bat_df, aes(x = lon, y = lat)) +
+velc_map<- ggplot(velc_df, aes(x = lon, y = lat)) +
   geom_rect(linewidth = 0.2, fill = NA,
        aes(xmin = lon - 0.1, xmax = lon + 0.1, ymin = lat - 0.1, ymax = lat + 0.1)) +
   geom_raster(aes(fill = velc), interpolate = FALSE, alpha = 0.9) +
   geom_polygon(data = map_base, aes(group = group), 
                colour = NA, fill = "grey80")+
   coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
-  scale_fill_distiller(name = "Veocidade de corrente(m/s)",
+  scale_fill_distiller(name = "Velocidade de corrente(m/s)",
                        palette = "Spectral",
                        guide = guide_colourbar(direction = "horizontal",
                                                title.position = "top",
@@ -97,8 +97,10 @@ sst_map<- ggplot(sst_df, aes(x = lon, y = lat)) +
 
 sst_map
 
-
 ```
+
+
+
 ```{r}
 dcost_df <- as.data.frame(d_cost, xy = T, na.rm = T)
 names(dcost_df)<- c("lon", "lat", "dcost")
@@ -124,6 +126,8 @@ dcost_map
 
 
 ```
+
+
 ```{r}
 dmar_df <- as.data.frame(d_mar, xy = T, na.rm = T)
 names(dmar_df)<- c("lon", "lat", "dmar")
@@ -135,7 +139,7 @@ dmar_map<- ggplot(dmar_df, aes(x = lon, y = lat)) +
   geom_polygon(data = map_base, aes(group = group), 
                colour = NA, fill = "grey80")+
   coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
-  scale_fill_distiller(name = "Distancia de Portos e MArinas",
+  scale_fill_distiller(name = "Distancia de Portos e Marinas",
                        direction = -1,
                        palette = "Spectral",
                        guide = guide_colourbar(direction = "horizontal",
@@ -149,6 +153,7 @@ dmar_map
 
 
 ```
+
 
 ```{r}
 dtraf_df <- as.data.frame(d_traf, xy = T, na.rm = T)
