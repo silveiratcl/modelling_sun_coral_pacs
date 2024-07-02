@@ -14,8 +14,65 @@ sst <- raster("./model_data/variables/sst_null.tif") # ok
 d_cost <- raster("./model_data/variables/d_cost_resampled.tif") #ok
 d_mar <- raster("./model_data/variables/d_mar_resampled.tif") # ok
 d_traf <- raster("./model_data/variables/d_traf_resampled.tif") # ok
+dist_inv <- raster("./layers/dist_inv.tiff")
+
 
 ```
+
+
+Creating the layers MCS and MHW for modelling
+
+```{r}
+
+#OISST_n_totalMCS_to_rst <- OISST_n_total
+#OISST_n_totalMHW_to_rst <- OISST_n_totalMHW
+
+OISST_n_totalMCS_to_rst2 <- OISST_n_totalMCS_to_rst %>%
+  distinct(lon, lat, .keep_all = TRUE) %>% 
+  select(c(lon, lat, total))
+print(OISST_n_totalMCS_to_rst2)
+
+
+OISST_n_totalMHW_to_rst2 <- OISST_n_totalMHW_to_rst %>%
+  distinct(lon, lat, .keep_all = TRUE) %>% 
+  select(c(lon, lat, total))
+print(OISST_n_totalMHW_to_rst2)
+
+
+# create raster
+
+#ref layer
+bat
+library(raster)
+path <- "./layers"
+
+
+mcs<-rasterFromXYZ(OISST_n_totalMCS_to_rst2, crs="+proj=longlat +datum=WGS84 +no_defs ", digits=5)
+mcs_res<-resample(mcs, bat, method = "ngb")
+writeRaster(mcs_res, filename=file.path(path, "mcs_resampled.tif"))
+
+#variables <- c(bat, mcs_res)
+#variables <- stack(variables) ok 
+#rm(variable)
+
+mhw<-rasterFromXYZ(OISST_n_totalMHW_to_rst2, crs="+proj=longlat +datum=WGS84 +no_defs ", digits=5)
+mhw_res<-resample(mhw, bat, method = "ngb")
+writeRaster(mhw_res, filename=file.path(path, "mhw_resampled.tif"))
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
 
 
 ```{r}
@@ -112,7 +169,7 @@ dcost_map<- ggplot(dcost_df, aes(x = lon, y = lat)) +
   geom_polygon(data = map_base, aes(group = group), 
                colour = NA, fill = "grey80")+
   coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
-  scale_fill_distiller(name = "Distancia da Costa(m)",
+  scale_fill_distiller(name = "Distancia de Costões (m)",
                        direction = -1,
                        palette = "Spectral",
                        guide = guide_colourbar(direction = "horizontal",
@@ -139,7 +196,7 @@ dmar_map<- ggplot(dmar_df, aes(x = lon, y = lat)) +
   geom_polygon(data = map_base, aes(group = group), 
                colour = NA, fill = "grey80")+
   coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
-  scale_fill_distiller(name = "Distancia de Portos e Marinas",
+  scale_fill_distiller(name = "Distancia de Portos e Marinas (m)",
                        direction = -1,
                        palette = "Spectral",
                        guide = guide_colourbar(direction = "horizontal",
@@ -166,7 +223,7 @@ dtraf_map<- ggplot(dtraf_df, aes(x = lon, y = lat)) +
   geom_polygon(data = map_base, aes(group = group), 
                colour = NA, fill = "grey80")+
   coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
-  scale_fill_distiller(name = "Distancia Rotas Tráfego Marinho (m)",
+  scale_fill_distiller(name = "Distancia de Rotas Tráfego Marinho (m)",
                        direction = -1,
                        palette = "Spectral",
                        guide = guide_colourbar(direction = "horizontal",
@@ -180,4 +237,32 @@ dtraf_map
 
 
 ```
+
+
+```{r}
+dist_inv_df <- as.data.frame(dist_inv, xy = T, na.rm = T)
+names(dist_inv_df)<- c("lon", "lat", "dist")
+
+dist_inv_map<- ggplot(dist_inv_df, aes(x = lon, y = lat)) +
+  geom_rect(linewidth = 0.2, fill = NA,
+       aes(xmin = lon - 0.1, xmax = lon + 0.1, ymin = lat - 0.1, ymax = lat + 0.1)) +
+  geom_raster(aes(fill = dist), interpolate = FALSE, alpha = 0.9) +
+  geom_polygon(data = map_base, aes(group = group), 
+               colour = NA, fill = "grey80")+
+  coord_fixed(ratio = 1, xlim = c(-49.0, -47.0), ylim = c(-29, -25), expand = TRUE) +
+  scale_fill_distiller(name = "Dist. Focos de Invasão (m)",
+                       direction = -1,
+                       guide = guide_colourbar(direction = "horizontal",
+                                               title.position = "top",
+                                               n.breaks = 10)) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+dist_inv_map
+
+```
+
+
+
+
 
